@@ -1,0 +1,11 @@
+{
+  "type": "mssql",
+  "host": "localhost",
+  "port": 1434,
+  "username": "sa",
+  "password": "qwertyuiop",
+  "database": "prayatna",
+  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "synchronize": true,
+  "logging": true
+}
