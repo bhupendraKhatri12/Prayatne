@@ -53,10 +53,10 @@
         btn.addEventListener('click', () => {
             const name = document.querySelector('#name').value;
             const email = document.querySelector('#email').value;
-            const ccn = document.querySelector('#ccn').value;
+            const creditCardNumber = document.querySelector('#ccn').value;
 
             //  data validation
-            if (name === '' || email === '' || ccn === '') {
+            if (name === '' || email === '' || creditCardNumber === '') {
                 alert('Please fill all the fields');
                 return;
             }
@@ -71,7 +71,7 @@
                 return;
             }
 
-            else if (ccn.length !== 16) {
+            else if (creditCardNumber.length !== 16) {
                 alert('Please enter a valid credit card number');
                 return;
             }
@@ -79,9 +79,9 @@
             const data = {
                 name,
                 email,
-                ccn
+                creditCardNumber
             };
-            fetch('http://localhost:3000/insert', {
+            fetch('http://localhost:3000/api/user', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -90,7 +90,7 @@
             }).then(res => res.json())
                 .then(data => {
                     console.log(data);
-                    if (data.status === 'success') {
+                    if (data.success === true) {
                         alert('Data inserted successfully');
                     } else {
                         alert('Data insertion failed');
