@@ -4,11 +4,18 @@ body {
 	height: 100vh;
 }
 
-.container-lg {
+.container-lg.view{
 	margin-top: 5%;
 }
 
-.main-body {
+.main-body-insert {
+    min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.main-body-view {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -29,14 +36,14 @@ input[type="text"] {
 	border-radius: 3px;
 }
 
-#viewButton {
-	background-color: #0091ea;
+#insertButton, #viewButton {
+    background-color: #0091ea;
     border-radius: 3px;
     color: white;
     font-size: 1.1rem;
 }
 
-#viewButton:hover {
+#insertButton:hover, #viewButton:hover {
 	background-color: #00b0ff;
 	color: white;
 }
