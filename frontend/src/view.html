@@ -38,14 +38,14 @@
         <hr>
         <div class="output-box my-5">
             <h3 class="mb-3">Your Information</h4>
-            <div class="row">
-                <h5 class="col-lg-3 col-md-4 col-5">Name:</h5>
-                <p class="col-lg-9 col-md-8 col-7" id="outputName">Example Name</p>
-            </div>
-            <div class="row">
-                <h5 class="col-lg-3 col-md-4 col-5">Email:</h5>
-                <p class="col-lg-9 col-md-8 col-7" id="outputEmail">example@email.com</p>
-            </div>
+                <div class="row">
+                    <h5 class="col-lg-3 col-md-4 col-5">Name:</h5>
+                    <p class="col-lg-9 col-md-8 col-7" id="outputName">Example Name</p>
+                </div>
+                <div class="row">
+                    <h5 class="col-lg-3 col-md-4 col-5">Email:</h5>
+                    <p class="col-lg-9 col-md-8 col-7" id="outputEmail">example@email.com</p>
+                </div>
         </div>
     </div>
 
@@ -53,6 +53,28 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
+
+    <script>
+        const btn = document.querySelector('.btn');
+        btn.addEventListener('click', () => {
+            const email = document.querySelector('#email').value;
+            const data = {
+                email
+            }
+            fetch('http://localhost:3000/view', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+            }).then(res => res.json())
+                // insert received data into the DOM
+                .then(data => {
+                    document.querySelector('#outputName').innerHTML = data.name;
+                    document.querySelector('#outputEmail').innerHTML = data.email;
+                })
+        })
+    </script>
 </body>
 
 </html>
