@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import appConfig from './config/app.config';
+import helmet from 'helmet';
 
 @Module({
   imports: [
@@ -15,4 +16,8 @@ import appConfig from './config/app.config';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(helmet()).forRoutes('*');
+  }
+}
