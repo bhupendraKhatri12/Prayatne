@@ -36,7 +36,7 @@
             </div>
         </div>
         <hr>
-        <div class="output-box my-5">
+        <div class="output-box fs-4 my-5">
             <h3 class="mb-3">Your Information</h4>
                 <div class="row">
                     <h5 class="col-lg-3 col-md-4 col-5">Name:</h5>
@@ -61,17 +61,18 @@
             const data = {
                 email
             }
-            fetch('http://localhost:3000/view', {
-                method: 'POST',
+            fetch(`http://localhost:3000/api/user/${email}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data),
+              
             }).then(res => res.json())
+
                 // insert received data into the DOM
                 .then(data => {
-                    document.querySelector('#outputName').innerHTML = data.name;
-                    document.querySelector('#outputEmail').innerHTML = data.email;
+                    document.querySelector('#outputName').innerHTML = data.data.name;
+                    document.querySelector('#outputEmail').innerHTML = data.data.email;
                 })
         })
     </script>
