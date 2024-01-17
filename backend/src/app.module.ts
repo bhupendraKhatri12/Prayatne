@@ -6,10 +6,17 @@ import { UserModule } from './user/user.module';
 import appConfig from './config/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user/entities/user.entity';
+import { CryptoModuleModule } from './crypto-module/crypto-module.module';
 import helmet from 'helmet';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([{
+      name:"Global",
+      ttl: 6000,
+      limit: 10,
+    }]),
     TypeOrmModule.forRoot({
       type: 'mssql',
       host: 'localhost',
@@ -29,6 +36,7 @@ import helmet from 'helmet';
       envFilePath: ['.env'],
     }),
     UserModule,
+    CryptoModuleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

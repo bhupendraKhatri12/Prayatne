@@ -5,18 +5,22 @@ import { ResponseTransformInterceptor } from './interceptor/response.transform.i
 import { ConfigService } from '@nestjs/config';
 import { AppConfigType } from './config/appConfigType';
 import { VersioningType } from '@nestjs/common';
+import helmet from 'helmet';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.useGlobalInterceptors(new ResponseTransformInterceptor());
   const configService = app.get(ConfigService<AppConfigType>);
 
+  app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix(
     configService.getOrThrow('app.apiPrefix', { infer: true }),
     {
       exclude: ['/'],
     },
   );
+  app.use(helmet())
 
   app.enableVersioning({
     type: VersioningType.URI,

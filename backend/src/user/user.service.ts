@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { errorMessage, successMessage } from '../utils/response';
-
+import {  successMessage, errorMessage } from '../utils/response';
+import {SuccessMessageResponse,ErrorMessageResponse} from "../utils/response"
 @Injectable()
 export class UserService {
   constructor(
@@ -13,35 +13,37 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<any> {
+  async create(createUserDto: CreateUserDto): Promise<SuccessMessageResponse<UserEntity>> {
     const newUser = this.userRepository.create(createUserDto);
 
-    return successMessage(
-      'Creates a new user',
-      await this.userRepository.save(newUser),
-    );
+    return successMessage('Creates a new user', await this.userRepository.save(newUser));
   }
 
-  async findAll(): Promise<UserEntity[]> {
-    return this.userRepository.find();
+  async findAll(): Promise<SuccessMessageResponse<UserEntity[]>| ErrorMessageResponse> {
+    return successMessage('All Users', await this.userRepository.find());
   }
 
-  async findOne(id: number): Promise<UserEntity> {
-    const user = await this.userRepository.findOne(id);
-    if (!user) {
-      throw new errorMessage(`User with ID ${id} not found`, 'user');
+  async findOne(email: string): Promise<SuccessMessageResponse<UserEntity>| ErrorMessageResponse> {
+    try {
+      const user = await this.userRepository.findOneOrFail({ where: { email: email } });
+      return successMessage('User',await this.userRepository.findOneOrFail({ where: { email: email } }));
+
+
+
+    } catch (error) {
+      throw new errorMessage(`User with Email ${email} not found`, 'user', HttpStatus.NOT_FOUND);
     }
-    return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<SuccessMessageResponse<UserEntity>> {
     const user = await this.findOne(id);
     this.userRepository.merge(user, updateUserDto);
-    return this.userRepository.save(user);
+    return successMessage('User updated', await this.userRepository.save(user));
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<SuccessMessageResponse<void>> {
     const user = await this.findOne(id);
     await this.userRepository.remove(user);
+    return successMessage('User removed', undefined);
   }
 }
