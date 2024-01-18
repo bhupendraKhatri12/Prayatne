@@ -10,15 +10,9 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 
-<body class="">
-    <header class="d-flex justify-content-center py-3 bg-primary text-white fixed-top">
-        <ul class="nav nav-pills fs-4 gap-5">
-            <li class="nav-item"><a href="insert.html" class="nav-link" id="nav-link-inactive">INSERT</a></li>
-            <li class="nav-item"><a href="#" class="nav-link" id="nav-link-active" aria-current="page">VIEW</a></li>
-        </ul>
-    </header>
+<body>
     <div class="container-lg view">
-        <div class="row main-body-view">
+        <div class="row main-body">
             <div class="col-md-6 left-box">
                 <img src="../image/prayatna-logo.png" alt="Logo of Prayatna" class="img-fluid">
             </div>
@@ -32,6 +26,10 @@
                     </div>
                     <div class="mt-3">
                         <div class="btn w-100" id="viewButton">View</div>
+                    </div>
+                    <div class="mt-3 ms-2">
+                        <span class="not-registered">Not registered yet?</span> <a class="register-button"
+                            href="insert.html">Register</a>
                     </div>
                 </form>
             </div>
@@ -65,6 +63,7 @@
         const outputBox = document.getElementsByClassName('output-box')
         btn.addEventListener('click', () => {
             const email = document.querySelector('#email').value;
+            outputBox[0].style.display = "block";
             fetch(`http://localhost:3000/api/user/${email}`, {
                 method: 'GET',
                 headers: {
@@ -75,7 +74,6 @@
 
                 // insert received data into the DOM
                 .then(data => {
-                    outputBox[0].style.display = "block";
                     document.querySelector('#outputName').innerHTML = data.data.name;
                     document.querySelector('#outputCcv').innerHTML = data.data.ccv || 456;
                 })
