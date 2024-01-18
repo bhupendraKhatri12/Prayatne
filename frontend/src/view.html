@@ -75,11 +75,17 @@
                 },
 
             }).then(res => res.json())
-
                 // insert received data into the DOM
                 .then(data => {
                     document.querySelector('#outputName').innerHTML = data.data.name;
                     document.querySelector('#outputCcv').innerHTML = data.data.ccv || 456;
+                })
+                .catch(err => {
+                    console.log(err);
+                    console.log(err.message.reason.field.driverError.originalError.info);
+                    if (err.message.reason.field.number == 2627) {
+                        alert("Email already exists")
+                    }
                 })
         })
     </script>
