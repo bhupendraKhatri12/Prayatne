@@ -81,6 +81,7 @@
                     document.querySelector('#outputCcv').innerHTML = data.data.ccv || 456;
                 })
                 .catch(err => {
+                    err = JSON.parse(err);
                     console.log(err);
                     console.log(err.message.reason.field.driverError.originalError.info);
                     if (err.message.reason.field.number == 2627) {
