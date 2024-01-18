@@ -1,6 +1,12 @@
 // src/user/user.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
-import { CreditCardEntity } from './card.entity'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
+import { CreditCardEntity } from './card.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -18,5 +24,3 @@ export class UserEntity {
   @JoinColumn()
   creditCard: CreditCardEntity;
 }
-
-

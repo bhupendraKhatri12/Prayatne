@@ -12,6 +12,8 @@ export class CreateUserDto {
   email: string;
 
   @ApiProperty()
-  @Length(16, 16, { message: 'Credit card number must be exactly 16 characters' })
+  @Length(16, 16, {
+    message: 'Credit card number must be exactly 16 characters',
+  })
   creditCardNumber: string;
 }

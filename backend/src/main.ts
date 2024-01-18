@@ -20,7 +20,7 @@ async function bootstrap() {
       exclude: ['/'],
     },
   );
-  app.use(helmet())
+  app.use(helmet());
 
   app.enableVersioning({
     type: VersioningType.URI,

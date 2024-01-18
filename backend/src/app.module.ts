@@ -6,7 +6,6 @@ import { UserModule } from './user/user.module';
 import appConfig from './config/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user/entities/user.entity';
-import { CryptoModuleModule } from './crypto-module/crypto-module.module';
 import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
 import awsConfig from './config/Aws.config';
@@ -14,11 +13,13 @@ import { CreditCardEntity } from './user/entities/card.entity';
 
 @Module({
   imports: [
-    ThrottlerModule.forRoot([{
-      name:"Global",
-      ttl: 6000,
-      limit: 10,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        name: 'Global',
+        ttl: 6000,
+        limit: 10,
+      },
+    ]),
     TypeOrmModule.forRoot({
       type: 'mssql',
       host: 'localhost',
@@ -26,7 +27,7 @@ import { CreditCardEntity } from './user/entities/card.entity';
       username: 'sa',
       password: 'qwertyuiop',
       database: 'prayatna',
-      entities: [UserEntity,CreditCardEntity],
+      entities: [UserEntity, CreditCardEntity],
       options: {
         encrypt: false, // MSSQL-specific option
       },
@@ -34,12 +35,12 @@ import { CreditCardEntity } from './user/entities/card.entity';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      ignoreEnvFile:false,
-      ignoreEnvVars:false,
-      load: [appConfig,awsConfig],
+      ignoreEnvFile: false,
+      ignoreEnvVars: false,
+      load: [appConfig, awsConfig],
       envFilePath: ['.env'],
     }),
-    UserModule,CryptoModuleModule
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
