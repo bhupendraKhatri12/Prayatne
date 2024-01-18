@@ -75,16 +75,15 @@ input[type="text"] {
 
 /* for card */
 .card-box {
-	margin-top: -100px;
-	margin-bottom: 150px;
-	scale: 1.4;
+	scale: 1.2;
 	position: relative;
 	height: 270px;
 	width: 450px;
 	margin-left: auto;
 	margin-right: auto;
 	border-radius: 25px;
-	background: hsla(0, 0%, 25%, 0.8);
+	/* background: hsla(0, 0%, 25%, 0.8); */
+	background: #4d75be;
 	backdrop-filter: blur(30px);
 	border: 2px solid rgba(255, 255, 255, 0.1);
 	box-shadow: 0 0 80px rgba(0, 0, 0, 0.2);
