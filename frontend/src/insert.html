@@ -10,35 +10,37 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 
-<body class="">
-    <header class="d-flex justify-content-center py-3 bg-primary text-white fixed-top">
-        <ul class="nav nav-pills fs-4 gap-5">
-            <li class="nav-item"><a href="#" class="nav-link" id="nav-link-active" aria-current="page">INSERT</a></li>
-            <li class="nav-item"><a href="view.html" class="nav-link" id="nav-link-inactive">VIEW</a></li>
-        </ul>
-    </header>
+<body>
     <div class="container-lg">
-        <div class="row main-body-insert">
+        <div class="row main-body">
             <div class="col-md-6 left-box">
                 <img src="../image/prayatna-logo.png" alt="Logo of Prayatna" class="img-fluid">
             </div>
             <div class="col-md-1"></div>
             <div class="col-md-5 right-box px-4">
-                <form method="post" class="form-control p-lg-5 p-3 shadow-lg">
+                <form method="post" class="form-control p-lg-4 p-3 rounded-1">
+                    <h4 class="fs-3 welcome">Welcome!</h4>
                     <div class="mb-lg-3 mb-2">
                         <label for="name" class="mb-1">Name</label>
-                        <input type="text" name="name" id="name" class="form-control" required placeholder="Enter your name">
+                        <input type="text" name="name" id="name" class="form-control" required
+                            placeholder="Enter your name">
                     </div>
                     <div class="mb-lg-3 mb-2">
                         <label for="email" class="mb-1">Email</label>
-                        <input type="text" name="email" id="email" class="form-control" required placeholder="example@email.com">
+                        <input type="text" name="email" id="email" class="form-control" required
+                            placeholder="example@email.com">
                     </div>
                     <div class="mb-lg-3 mb-2">
                         <label for="ccn" class="mb-1">Credit Card Number</label>
-                        <input type="text" name="ccn" id="ccn" class="form-control" required placeholder="XXXX XXXX XXXX XXXX">
+                        <input type="text" name="ccn" id="ccn" class="form-control" required
+                            placeholder="XXXX XXXX XXXX XXXX">
                     </div>
                     <div class="mt-3">
                         <div class="btn w-100" id="insertButton">Insert</div>
+                    </div>
+                    <div class="mt-3 ms-2">
+                        <span class="not-registered">Already registered?</span> <a class="register-button"
+                            href="view.html">View data</a>
                     </div>
                 </form>
             </div>
