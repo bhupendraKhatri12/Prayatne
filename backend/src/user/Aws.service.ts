@@ -1,16 +1,13 @@
-// src/aws-kms/aws-kms.service.ts
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
 import { AwsConfig } from '../config/aws.configType';
-import crypto from "crypto"
+import crypto from 'crypto';
 @Injectable()
 export class AwsKmsService {
   private readonly kms: AWS.KMS;
 
-  constructor(
-    private readonly configService: ConfigService<AwsConfig>,
-  ) {
+  constructor(private readonly configService: ConfigService<AwsConfig>) {
     AWS.config.update({
       region: 'ap-south-1',
     });
@@ -36,13 +33,15 @@ export class AwsKmsService {
   }
 
   //generate Key
-  private generateDataKeyNew(keyId: string): Promise<{ plaintextKey: Buffer; ciphertextKey: Buffer }> {
+  private generateDataKeyNew(
+    keyId: string,
+  ): Promise<{ plaintextKey: Buffer; ciphertextKey: Buffer }> {
     return new Promise((resolve, reject) => {
       const generateDataKeyParams: AWS.KMS.GenerateDataKeyRequest = {
         KeyId: process.env.KEY_ID,
         KeySpec: process.env.ALGORITHM_SPEC,
       };
- 
+
       this.kms.generateDataKey(generateDataKeyParams, (err, data) => {
         if (err) {
           reject(err);
@@ -56,11 +55,10 @@ export class AwsKmsService {
     });
   }
 
-
   //Encrypt Data
   async encryptData(plaintextData: string): Promise<any> {
     try {
-      console.log(plaintextData,process.env.KEY_ID)
+      console.log(plaintextData, process.env.KEY_ID);
       const dataKey = await this.generateDataKeyNew(process.env.KEY_ID);
       const dek = dataKey.plaintextKey;
       const encryptedDataKey = dataKey.ciphertextKey;
@@ -69,39 +67,34 @@ export class AwsKmsService {
 
       const encryptedData = this.encryptAES(plaintextData, dek, iv);
 
-      console.log('Encrypted Data:', encryptedData);
-      console.log('Encrypted DEK:', encryptedDataKey.toString('base64'));
-      console.log('Initialization Vector:', iv.toString('base64'));
-
-       const encrpytedDataKey = encryptedDataKey.toString('base64');
-       const intialVector =   iv.toString('base64');
+      const encrpytedDataKey = encryptedDataKey.toString('base64');
+      const intialVector = iv.toString('base64');
 
       // Return or store the encrypted data as needed
-      return {encryptedData,encrpytedDataKey,intialVector};
+      return { encryptedData, encrpytedDataKey, intialVector };
     } catch (error) {
       console.error('Error:', error);
       throw new Error('Failed to encrypt data');
     }
-
-
-
-
-
-
-
   }
 
-
-
-d
-  //Decyrpt Data 
-  async decryptData(encryptedData: string, encryptedDataKey: string, iv: string): Promise<string> {
+  d;
+  //Decyrpt Data
+  async decryptData(
+    encryptedData: string,
+    encryptedDataKey: string,
+    iv: string,
+  ): Promise<string> {
     try {
       // Decrypt Data Encryption Key (DEK) using AWS KMS
       const dek = await this.decryptDataKey(encryptedDataKey);
 
       // Decrypt the data using DEK
-      const decryptedData = this.decryptAES(encryptedData, dek, Buffer.from(iv, 'base64'));
+      const decryptedData = this.decryptAES(
+        encryptedData,
+        dek,
+        Buffer.from(iv, 'base64'),
+      );
 
       console.log('Decrypted Data:', decryptedData);
       return decryptedData;
@@ -127,11 +120,7 @@ d
     });
   }
 
-
-
-
-
-  //old Code 
+  //old Code
   // async generateDataKey(keyId: string): Promise<{ plaintextKey: string; encryptedKey: string }> {
   //   const params: AWS.KMS.GenerateDataKeyRequest = {
   //     KeyId: this.configService.get('keyId', {
@@ -152,7 +141,6 @@ d
   //     throw new Error('Failed to generate data key');
   //   }
   // }
-
 
   // async encryptData(data: string): Promise<string> {
   //   console.log(process.env.KEY_ID);
