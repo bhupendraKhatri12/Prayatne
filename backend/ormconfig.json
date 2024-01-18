@@ -1,10 +1,10 @@
 {
-  "type": "mssql",
+  "type": "postgres",
   "host": "localhost",
-  "port": 1434,
-  "username": "sa",
-  "password": "qwertyuiop",
-  "database": "prayatna",
+  "port": 5432,
+  "username": "postgres",
+  "password": "RS9861445590.",
+  "database": "Prayatna",
   "entities": ["dist/**/*.entity{.ts,.js}"],
   "synchronize": true,
   "logging": true

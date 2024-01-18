@@ -21,12 +21,12 @@ import { CreditCardEntity } from './user/entities/card.entity';
       },
     ]),
     TypeOrmModule.forRoot({
-      type: 'mssql',
+      type: 'postgres',
       host: 'localhost',
-      port: 1434,
-      username: 'sa',
-      password: 'qwertyuiop',
-      database: 'prayatna',
+      port: 5432,
+      username: 'postgres',
+      password: 'RS9861445590.',
+      database: 'Prayatna',
       entities: [UserEntity, CreditCardEntity],
       options: {
         encrypt: false, // MSSQL-specific option
