@@ -83,7 +83,7 @@ input[type="text"] {
 	margin-right: auto;
 	border-radius: 25px;
 	/* background: hsla(0, 0%, 25%, 0.8); */
-	background: #4d75be;
+	background: #263e6a;
 	backdrop-filter: blur(30px);
 	border: 2px solid rgba(255, 255, 255, 0.1);
 	box-shadow: 0 0 80px rgba(0, 0, 0, 0.2);
