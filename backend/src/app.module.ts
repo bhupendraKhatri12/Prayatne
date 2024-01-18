@@ -9,6 +9,8 @@ import { UserEntity } from './user/entities/user.entity';
 import { CryptoModuleModule } from './crypto-module/crypto-module.module';
 import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
+import awsConfig from './config/Aws.config';
+import { CreditCardEntity } from './user/entities/card.entity';
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
       username: 'sa',
       password: 'qwertyuiop',
       database: 'prayatna',
-      entities: [UserEntity],
+      entities: [UserEntity,CreditCardEntity],
       options: {
         encrypt: false, // MSSQL-specific option
       },
@@ -32,11 +34,12 @@ import { ThrottlerModule } from '@nestjs/throttler';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig],
+      ignoreEnvFile:false,
+      ignoreEnvVars:false,
+      load: [appConfig,awsConfig],
       envFilePath: ['.env'],
     }),
-    UserModule,
-    CryptoModuleModule,
+    UserModule,CryptoModuleModule
   ],
   controllers: [AppController],
   providers: [AppService],

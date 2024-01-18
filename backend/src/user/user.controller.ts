@@ -12,8 +12,10 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('user')
+@ApiTags("Users")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -25,21 +27,17 @@ export class UserController {
 
   @Get()
   @UseGuards(ThrottlerGuard)
- async findAll():any {
+ async findAll() {
     return await this.userService.findAll();
   }
 
   @Get(':email')
   @UseGuards(ThrottlerGuard)
-  asyncfindOne(@Param('email') email: string) {
+  async findOne(@Param('email') email: string) {
     return await this.userService.findOne(email);
   }
 
-  @Patch(':id')
-  @UseGuards(ThrottlerGuard)
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
+
 
   @Delete(':id')
   @UseGuards(ThrottlerGuard)

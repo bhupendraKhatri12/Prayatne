@@ -1,0 +1,5 @@
+ context = {
+    "stage": "youtube",
+    "purpose: "youtube demo",
+    origin: "us-east-1"
+};
