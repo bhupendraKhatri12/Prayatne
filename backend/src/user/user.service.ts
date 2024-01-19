@@ -85,7 +85,7 @@ export class UserService {
     );
   }
 
-  async findOne(email: string): Promise<SuccessMessageResponse<UserInfo> | ErrorMessageResponse<void>> {
+  async findOne(email: string): Promise<any> {
     try {
       const queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
