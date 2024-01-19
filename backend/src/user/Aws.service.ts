@@ -35,7 +35,7 @@ export class AwsKmsService {
   //generate Key
   private generateDataKeyNew(
     keyId: string,
-  ): Promise<{ plaintextKey: Buffer; ciphertextKey: Buffer }> {
+  ): Promise<{ plaintextKey: any; ciphertextKey: any }> {
     return new Promise((resolve, reject) => {
       const generateDataKeyParams: AWS.KMS.GenerateDataKeyRequest = {
         KeyId: process.env.KEY_ID,
@@ -58,7 +58,6 @@ export class AwsKmsService {
   //Encrypt Data
   async encryptData(plaintextData: string): Promise<any> {
     try {
-      console.log(plaintextData, process.env.KEY_ID);
       const dataKey = await this.generateDataKeyNew(process.env.KEY_ID);
       const dek = dataKey.plaintextKey;
       const encryptedDataKey = dataKey.ciphertextKey;
@@ -78,7 +77,7 @@ export class AwsKmsService {
     }
   }
 
-  d;
+
   //Decyrpt Data
   async decryptData(
     encryptedData: string,
@@ -96,7 +95,6 @@ export class AwsKmsService {
         Buffer.from(iv, 'base64'),
       );
 
-      console.log('Decrypted Data:', decryptedData);
       return decryptedData;
     } catch (error) {
       console.error('Error:', error);
@@ -104,7 +102,7 @@ export class AwsKmsService {
     }
   }
 
-  private decryptDataKey(encryptedDataKey: string): Promise<Buffer> {
+  private decryptDataKey(encryptedDataKey: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const decryptDataKeyParams: AWS.KMS.DecryptRequest = {
         CiphertextBlob: Buffer.from(encryptedDataKey, 'base64'),
@@ -119,46 +117,4 @@ export class AwsKmsService {
       });
     });
   }
-
-  //old Code
-  // async generateDataKey(keyId: string): Promise<{ plaintextKey: string; encryptedKey: string }> {
-  //   const params: AWS.KMS.GenerateDataKeyRequest = {
-  //     KeyId: this.configService.get('keyId', {
-  //       infer: true,
-  //     }) || process.env.KEY_ID,
-  //     KeySpec: this.configService.get('algorithmspec') || process.env.ALGORITHM_SPEC, // You can specify the desired key spec
-  //   };
-
-  //   try {
-  //     const data = await this.kms.generateDataKey(params).promise();
-
-  //     const plaintextKey = data.Plaintext.toString('base64');
-  //     const encryptedKey = data.CiphertextBlob.toString('base64');
-
-  //     return { plaintextKey, encryptedKey };
-  //   } catch (error) {
-  //     console.error('Error generating data key:', error);
-  //     throw new Error('Failed to generate data key');
-  //   }
-  // }
-
-  // async encryptData(data: string): Promise<string> {
-  //   console.log(process.env.KEY_ID);
-  //   const { plaintextKey } = await this.generateDataKey(process.env.KEY_ID);
-  //   const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(plaintextKey, 'base64'), Buffer.alloc(16, 0));
-  //   let encryptedData = cipher.update(data, 'utf-8', 'base64');
-  //   encryptedData += cipher.final('base64');
-
-  //   return encryptedData;
-  // }
-
-  // async decryptData(encryptedData: string): Promise<string> {
-  //   const { encryptedKey } = await this.generateDataKey(process.env.KEY_ID);
-
-  //   const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptedKey, 'base64'), Buffer.alloc(16, 0));
-  //   let decryptedData = decipher.update(encryptedData, 'base64', 'utf-8');
-  //   decryptedData += decipher.final('utf-8');
-
-  //   return decryptedData;
-  // }
 }

@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Repository,  } from 'typeorm';
 import { successMessage, errorMessage } from '../utils/response';
 import {
   SuccessMessageResponse,
@@ -23,96 +23,114 @@ export class UserService {
     private dataSource: DataSource,
   ) {}
 
-  async create(
-    createUserDto: CreateUserDto,
-  ): Promise<SuccessMessageResponse<UserInfo> | ErrorMessageResponse> {
+  async create(createUserDto: CreateUserDto): Promise<SuccessMessageResponse<any> | ErrorMessageResponse<void>> {
     try {
-      const { name, email, creditCardNumber } = createUserDto;
-      // Create a new user
-      const newUser = new UserEntity();
-      newUser.name = name;
-      newUser.email = email;
-
-      //Create a new CreditCard
-      const newCreditCard = new CreditCardEntity();
-      newCreditCard.creditCardNumber = creditCardNumber;
-
-      //Encrypting the Credit Card
-      // Encrypt the credit card number
-      let encryptedResponse;
+      const queryRunner = this.dataSource.createQueryRunner();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+  
       try {
-        encryptedResponse =
-          await this.AwsKmsService.encryptData(creditCardNumber);
+        const { name, email, creditCardNumber } = createUserDto;
+  
+        // Encrypt credit card data first
+        const encryptedResponse = await this.AwsKmsService.encryptData(creditCardNumber);
+        if (!encryptedResponse.encrpytedDataKey || !encryptedResponse.encryptedData || !encryptedResponse.intialVector) {
+          return errorMessage("Failed to encrypt data", "data encryption");
+        }
+  
+        
+        
+        // Create credit card entity
+        const savedCreditCard = await queryRunner.manager.save(queryRunner.manager.create(CreditCardEntity, {
+          encrpytedDataKey: encryptedResponse.encrpytedDataKey,
+          creditCardNumber: encryptedResponse.encryptedData,
+          intialVector: encryptedResponse.intialVector,
+        }));
+        
+        // Create user entity (without credit card reference)
+        const savedUser = await queryRunner.manager.save(queryRunner.manager.create(UserEntity, { name, email,creditCard: savedCreditCard }));
+        // Establish the relationship between the user and credit card
+        savedUser.creditCard = savedCreditCard; // Assign the credit card
+  
+        await queryRunner.commitTransaction();
+  
+        const returnedData = {
+          name: savedUser.name,
+          email: savedUser.email,
+        }; // creditCardNumber is not returned as it's sensitive
+  
+        return successMessage('Creates a new user', returnedData);
       } catch (error) {
-        throw new Error('Error encrypting credit card data');
+        await queryRunner.rollbackTransaction();
+        console.error('Error creating user:', error);
+        return errorMessage('Error creating user', error);
+      } finally {
+        await queryRunner.release();
       }
-
-      newCreditCard.encrpytedDataKey = encryptedResponse.encrpytedDataKey;
-      newCreditCard.creditCardNumber = encryptedResponse.encryptedData;
-      newCreditCard.intialVector = encryptedResponse.intialVector;
-      const saveCreditCard =
-        await this.creditCardRepository.save(newCreditCard);
-
-      //saving the credit card details
-      newUser.creditCard = saveCreditCard;
-      const savedUser = await this.userRepository.save(newUser);
-
-      const returnedData = {
-        name: savedUser.name,
-        email: savedUser.email,
-        creditCardNumber: savedUser.creditCard.creditCardNumber,
-      };
-
-      return successMessage('Creates a new user', returnedData);
     } catch (error) {
+      console.error('Error managing transaction:', error);
       return errorMessage('Error creating user', error);
     }
   }
 
+
+
+
   async findAll(): Promise<
-    SuccessMessageResponse<UserEntity[]> | ErrorMessageResponse
+    SuccessMessageResponse<UserEntity[]> |  ErrorMessageResponse<void>
   > {
     return successMessage(
       'All Users',
-      await this.userRepository.find({ relations: ['creditCard'] }),
+      await this.userRepository.find({select:['name','email'] }),
     );
   }
 
-  async findOne(
-    email: string,
-  ): Promise<SuccessMessageResponse<UserInfo> | ErrorMessageResponse> {
+  async findOne(email: string): Promise<SuccessMessageResponse<UserInfo> | ErrorMessageResponse<void>> {
     try {
-      const user = await this.userRepository.findOne({
-        where: { email: email },
-        relations: ['creditCard'],
-      });
-
-      const creditCardNumber = user.creditCard.creditCardNumber;
-      const intialVector = user.creditCard.intialVector;
-      const encrpytedDataKey = user.creditCard.encrpytedDataKey;
-
-      const decrytpedCard = await this.AwsKmsService.decryptData(
-        creditCardNumber,
-        encrpytedDataKey,
-        intialVector,
-      );
-
-      const returnedData = {
-        name: user.name,
-        email: user.email,
-        creditCardNumber: decrytpedCard,
-      };
-
-      return successMessage('User', returnedData);
+      const queryRunner = this.dataSource.createQueryRunner();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+  
+      try {
+        const user = await queryRunner.manager.findOne(UserEntity, {
+          where: { email: email },
+          relations: ["creditCard"], // Specify the relations to load
+        });
+        if (!user) {
+          throw new NotFoundException(`User with Email ${email} not found`);
+        }
+  
+        const creditCardNumber = user.creditCard.creditCardNumber;
+        const intialVector = user.creditCard.intialVector;
+        const encrpytedDataKey = user.creditCard.encrpytedDataKey;
+  
+        const decrytpedCard = await this.AwsKmsService.decryptData(
+          creditCardNumber,
+          encrpytedDataKey,
+          intialVector,
+        );
+  
+        const returnedData = {
+          name: user.name,
+          email: user.email,
+          creditCardNumber: decrytpedCard,
+        };
+  
+        await queryRunner.commitTransaction();
+  
+        return successMessage('User', returnedData);
+      } catch (error) {
+        await queryRunner.rollbackTransaction();
+        throw errorMessage(`Error finding user with Email ${email}`, error);
+      } finally {
+        await queryRunner.release();
+      }
     } catch (error) {
-      throw errorMessage(`User with Email ${email} not found`, error);
+      console.error('Error managing transaction:', error);
+      return errorMessage('Error finding user', error);
     }
   }
+  
 
-  async remove(
-    id: number,
-  ): Promise<SuccessMessageResponse<UserEntity> | ErrorMessageResponse> {
-    const user = await this.userRepository.findOne({ id: id });
-    return successMessage('User removed', user);
-  }
+
 }

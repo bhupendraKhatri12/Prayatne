@@ -27,7 +27,7 @@ export class UserController {
   @UseGuards(ThrottlerGuard)
   async create(
     @Body() createUserDto: CreateUserDto,
-  ): Promise<SuccessMessageResponse<UserInfo> | ErrorMessageResponse> {
+  ): Promise<SuccessMessageResponse<UserInfo> | ErrorMessageResponse<void>> {
     return this.userService.create(createUserDto);
   }
 
@@ -43,9 +43,5 @@ export class UserController {
     return await this.userService.findOne(email);
   }
 
-  @Delete(':id')
-  @UseGuards(ThrottlerGuard)
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
+
 }

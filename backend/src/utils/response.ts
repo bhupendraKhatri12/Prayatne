@@ -5,7 +5,7 @@ export interface SuccessMessageResponse<T> {
   data: T;
 }
 
-export interface ErrorMessageResponse {
+export interface ErrorMessageResponse<T> {
   reason: string;
   field: string;
 }
@@ -26,7 +26,7 @@ export function errorMessage<T>(
   ...status: any
 ): ErrorMessageResponse<T> {
   throw new HttpException(
-    { reason, field } as ErrorMessageResponse, // Ensure the shape of the error message
+    { reason, field } as ErrorMessageResponse<void>, // Ensure the shape of the error message
     status[0] || HttpStatus.BAD_REQUEST,
   );
 }

@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import { ThrottlerModule } from '@nestjs/throttler';
 import awsConfig from './config/Aws.config';
 import { CreditCardEntity } from './user/entities/card.entity';
+import { FileLogger } from 'typeorm';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { CreditCardEntity } from './user/entities/card.entity';
       port: 1434,
       username: 'sa',
       password: 'qwertyuiop',
-      database: 'prayatna',
+      database: 'Prayatna',
       entities: [UserEntity, CreditCardEntity],
       options: {
         encrypt: false, // MSSQL-specific option
@@ -43,7 +44,8 @@ import { CreditCardEntity } from './user/entities/card.entity';
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,    { provide: Logger, useClass: FileLogger },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
