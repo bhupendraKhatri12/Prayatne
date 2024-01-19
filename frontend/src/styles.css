@@ -4,18 +4,8 @@ body {
 	height: 100vh;
 }
 
-.container-lg.view{
-	margin-top: 5%;
-}
-
-.main-body-insert {
-    min-height: 100vh;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.main-body-view {
+.main-body {
+	min-height: 100vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -23,40 +13,164 @@ body {
 
 form {
 	background-color: white;
-	border: 1px solid black !important;
+	border: 1px solid rgba(84, 84, 84, 0.5) !important;
+}
+
+.welcome {
+	font-weight: bold;
 }
 
 label {
-	font-weight: 500;
-    font-size: 0.9rem;
+	font-weight: 600;
+	font-size: 0.9rem;
 }
 
 input[type="text"] {
-	border: 1px solid black;
+	border: 1px solid rgba(84, 84, 84, 0.5) !important;
 	border-radius: 3px;
 }
 
-#insertButton, #viewButton {
-    background-color: #0091ea;
-    border-radius: 3px;
-    color: white;
-    font-size: 1.1rem;
+#insertButton,
+#viewButton {
+	background-color: #0091ea;
+	border-radius: 3px;
+	color: white;
+	font-size: 1.1rem;
 }
 
-#insertButton:hover, #viewButton:hover {
+#insertButton:hover,
+#viewButton:hover {
 	background-color: #00b0ff;
 	color: white;
 }
 
-#nav-link-active{
+#nav-link-active {
 	background-color: white;
 	color: #0d6efd;
 }
 
-#nav-link-inactive{
+#nav-link-inactive {
 	color: white;
 }
-#nav-link-inactive:hover{
+#nav-link-inactive:hover {
 	background-color: #e1e1e1;
 	color: #0d6efd;
+}
+
+.not-registered {
+	color: #959595;
+}
+
+.register-button {
+	text-decoration: none;
+	color: #0f0f0f;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+/* make output box only visible after fetching */
+.output-box {
+	display: none;
+}
+
+/* for card */
+.card-box {
+	scale: 1.2;
+	position: relative;
+	height: 270px;
+	width: 450px;
+	margin-left: auto;
+	margin-right: auto;
+	border-radius: 25px;
+	/* background: hsla(0, 0%, 25%, 0.8); */
+	background: #263e6a;
+	backdrop-filter: blur(30px);
+	border: 2px solid rgba(255, 255, 255, 0.1);
+	box-shadow: 0 0 80px rgba(0, 0, 0, 0.2);
+	overflow: hidden;
+}
+
+.logo img,
+.chip img,
+.number,
+.name,
+.date,
+.ccv,
+.ring {
+	position: absolute; /* All items inside card should have absolute position */
+}
+
+.logo img {
+	top: 35px;
+	right: 40px;
+	width: 80px;
+	height: auto;
+	opacity: 0.8;
+}
+
+.chip img {
+	top: 120px;
+	left: 40px;
+	width: 50px;
+	height: auto;
+	opacity: 0.8;
+}
+
+.number,
+.name,
+.date,
+.ccv {
+	color: rgba(255, 255, 255, 0.8);
+	font-weight: 400;
+	letter-spacing: 2px;
+	text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
+.number {
+	left: 40px;
+	bottom: 65px;
+	font-family: "Nunito", sans-serif;
+}
+
+.name {
+	font-size: 0.7rem;
+	left: 40px;
+	bottom: 35px;
+}
+
+.date {
+	font-size: 0.7rem;
+	bottom: 35px;
+	right: 110px;
+}
+
+.ccv {
+	font-size: 0.7rem;
+	bottom: 35px;
+	right: 40px;
+}
+
+/* The two rings on the card background */
+.ring {
+	height: 500px;
+	width: 500px;
+	border-radius: 50%;
+	background: transparent;
+	border: 50px solid rgba(255, 255, 255, 0.1);
+	bottom: -250px;
+	right: -250px;
+	box-sizing: border-box;
+}
+
+.ring::after {
+	content: "";
+	position: absolute;
+	height: 600px;
+	width: 600px;
+	border-radius: 50%;
+	background: transparent;
+	border: 30px solid rgba(255, 255, 255, 0.1);
+	bottom: -80px;
+	right: -110px;
+	box-sizing: border-box;
 }
