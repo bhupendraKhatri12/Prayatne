@@ -58,6 +58,18 @@
         crossorigin="anonymous"></script>
 
     <script>
+        function addSpacesTo16DigitString(inputString) {
+            // Check if the input string is exactly 16 characters long
+            if (inputString.length !== 16) {
+                return "Input string must be 16 characters long.";
+            }
+
+            // Add spaces after every 4 digits
+            var resultString = inputString.match(/.{1,4}/g).join(' ');
+
+            return resultString;
+        }
+
         const btn = document.querySelector('#viewButton');
         const outputBox = document.getElementsByClassName('output-box')
         const prayatnaLogo = document.querySelector('#prayatnaLogo');
@@ -74,11 +86,13 @@
                     'Content-Type': 'application/json'
                 },
 
-            }).then(res => res.json())
+            }).then(res => JSON.parse(res))
                 // insert received data into the DOM
                 .then(data => {
                     document.querySelector('#outputName').innerHTML = data.data.name;
-                    document.querySelector('#outputCcv').innerHTML = data.data.ccv || 456;
+                    document.querySelector('#outputCcv').innerHTML = data.data.creditCardNumber.slice(0, 4) || 4567;
+                    const formattedNumber = addSpacesTo16DigitString(data.data.creditCardNumber);
+                    document.querySelector('#outputNumber').innerHTML = formattedNumber;
                 })
                 .catch(err => {
                     err = JSON.parse(err);
@@ -89,6 +103,25 @@
                     }
                 })
         })
+
+        function test() {
+            let response = `{
+                    "statusCode": 200,
+                    "success": true,
+                    "message": "User",
+                    "data": {
+                        "name": "Bhupendra  khatri",
+                        "email": "bhupendra.kc35@gmail.com",
+                        "creditCardNumber": "3782822463100055"
+                    }
+                }`
+
+            response = JSON.parse(response)
+            document.querySelector('#outputName').innerHTML = response.data.name;
+            document.querySelector('#outputCcv').innerHTML = response.data.creditCardNumber.slice(0, 4) || 4567;
+            const formattedNumber = addSpacesTo16DigitString(response.data.creditCardNumber);
+            document.querySelector('#outputNumber').innerHTML = formattedNumber;
+        }
     </script>
 </body>
 
