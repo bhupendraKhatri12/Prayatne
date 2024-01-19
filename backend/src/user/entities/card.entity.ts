@@ -10,15 +10,15 @@ import { UserEntity } from './user.entity';
 
 @Entity('creditCard')
 export class CreditCardEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @Column()
+  @Column({nullable:false})
   creditCardNumber: string;
 
-  @Column({ default: '', nullable: true })
+  @Column({ nullable: false })
   intialVector: string;
 
-  @Column({ default: '', nullable: true })
+  @Column({ default: '', nullable: false })
   encrpytedDataKey: string;
 }
